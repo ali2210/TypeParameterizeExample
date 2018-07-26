@@ -1,0 +1,38 @@
+/** REPL **/
+
+
+// abstract class
+scala> sealed abstract class Maybe[+A] {
+     | def isEmpty : Boolean
+     | def get : A
+     | def getorElse[B >: A](default : B) : B = {  // this function takes any parameter and return parameter or value
+     | if(isEmpty) default else get }
+     | }
+defined class Maybe
+
+
+// inherhitance with case class; case class use parent class properties
+scala> final case class Just[A](value : A) extends Maybe[A] {
+     | def isEmpty = false
+     | def get = value
+     | }
+defined class Just
+
+scala> case object Nil extends Maybe[scala.Nothing] {
+     | def isEmpty = true
+     | def get = throw new NoSuchElementException("Nil.get")
+     | }
+defined object Nil
+
+scala> def position[A, B] (xs: List[A] , value : B ) : Maybe[Int] = {  
+     | val index = xs.indexOf(value)
+     | if(index > -1 ) Just(xs.indexOf(value)) else Nil
+     | }
+position: [A, B](xs: List[A], value: B)Maybe[Int]
+
+scala> position(List() ,"something").getorElse(-1)
+res3: Int = -1
+
+scala> position(List("one", "two", "three") ,"one").getorElse(-1)
+res4: Int = 0
+=========================================================== THE END============================================================================
